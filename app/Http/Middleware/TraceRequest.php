@@ -11,9 +11,13 @@ class TraceRequest
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $traceId = $request->header('X-Trace-Id');
 
-        $traceId = (string) Str::uuid();
-        
+        if (!$traceId) {
+            $traceId = (string) Str::uuid();
+        }
+
+        $request->attributes->set('trace_id', $traceId);
 
         logger('TraceRequest - INICIO', [
             'trace_id' => $traceId,
